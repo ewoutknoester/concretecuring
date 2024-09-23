@@ -191,6 +191,10 @@ hsd.all <- emmeans(lme.3W, specs = pairwise ~ Date |Species*Curingtime, adjust =
 # Plotting
 ```{r plotting}
 
+# GET OVERALL AVERAGE PER FUNCTIONAL GROUP
+data4.FG <- subset(data3.ARC, Date == "06/2022")
+data4.FG <- data_summary(data4.FG, varname = "Cover", groupnames = c("FG"))
+
 # OVERALL PLOT
 ## Get average start value of coral cover per species
 data4.start <- subset(data3.ARC, Date == "06/2021" & FG == "Hard coral")
@@ -209,7 +213,7 @@ names(labs) <- c("Acropora formosa", "Acropora verweyi", "Millepora tenera", "Po
 
 ## Plot
 ggplot(data4.plot, aes(fill = FG, y = Cover, x = Curingtime)) + 
-  geom_hline(data = data4.start, aes(yintercept = Cover), colour = "#A05800", size = 0.8)+  
+  geom_hline(data = data4.start, aes(yintercept = Cover), colour = "#A05800", size = 1.25)+  
   facet_wrap(~Species, nrow = 5, strip.position = "right", labeller = labeller(Species = labs))+
     geom_bar(position = "stack", stat = "identity", width = 0.8)+
     scale_fill_manual(values = c("#bfbfbf", "#FFCAFB", "#A3FF9A", "#53AB4A", "#FDF294", "#ffb55a"))+
@@ -232,7 +236,7 @@ ggplot(data4.plot, aes(fill = FG, y = Cover, x = Curingtime)) +
       plot.margin = unit(c(0, 0.1, 0.5, 0.5), "cm"),
       panel.background = element_rect(fill = "#FCFCFC"),
       plot.background = element_rect(fill = "#FFFFFF"),
-      panel.grid.major = element_line(colour = "#797979", size = 0.3),
+      panel.grid.major = element_line(colour = "#797979", size = 0.1),
       axis.ticks.length = unit(0.15, "cm"),
       legend.position = "top",
       panel.spacing = unit(1, "lines")
@@ -266,6 +270,8 @@ ggplot(data4.plotSxD, aes(fill = Date, y = Cover, x = Species)) +
     scale_x_discrete(labels=labslong)+
     geom_errorbar(data = data4.plotSxD, aes(x = Species, ymin = Cover - se, ymax = Cover + se), 
                   width = 0.1, size = 0.6, position = position_dodge(.9))+
+    geom_text(data = data4.plotSxD, aes(x = Species, y = 0.9, label = paste0("n = ", n)), 
+            size = 2.6, position=position_dodge(.9))+
     theme_economist()+
     theme(
       axis.title.x = element_blank(),
